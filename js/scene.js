@@ -19,6 +19,18 @@
     context.fillRect(x, y, width, height);
   };
 
+  // Rasterize equal-width/equal-height discs with crisp, symmetric pixel steps.
+  function pixelDisc(color, x, y, size) {
+    const radius = size / 2;
+    for (let row = 0; row < size; row++) {
+      const dy = row + .5 - radius;
+      const span = Math.sqrt(radius * radius - dy * dy);
+      const left = Math.ceil(radius - span - .5);
+      const right = Math.floor(radius + span - .5);
+      rect(ctx, color, x + left, y + row, right - left + 1, 1);
+    }
+  }
+
   function creatorSheet() {
     const sheet = makeCanvas(96, 40);
     const pen = sheet.getContext("2d");
@@ -148,9 +160,12 @@
       ctx.globalAlpha = 1;
     }
     const celestialY = 20 + Math.round(Math.sin(time * .8));
-    rect(ctx, night ? "#bacad4" : "#e8ce8c", 266, celestialY, 18, 18);
-    rect(ctx, night ? "#f5efd0" : "#fff0bd", 269, celestialY - 3, 12, 24);
-    if (night) rect(ctx, "#d4d8c7", 270, celestialY + 5, 4, 4);
+    pixelDisc(night ? "#bacad4" : "#e8ce8c", 264, celestialY - 2, 22);
+    pixelDisc(night ? "#f5efd0" : "#fff0bd", 266, celestialY, 18);
+    if (night) {
+      pixelDisc("#d4d8c7", 269, celestialY + 3, 4);
+      pixelDisc("#d4d8c7", 276, celestialY + 10, 5);
+    }
     [[34, 29], [174, 45]].forEach(([x, y], index) => {
       const drift = Math.round(Math.sin(time * .4 + index) * 3);
       rect(ctx, palette.cloud, x + drift, y, 38, 7);

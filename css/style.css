@@ -61,7 +61,7 @@ svg { shape-rendering: crispEdges; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 .landscape { position: fixed; inset: 0; pointer-events: none; overflow: hidden; background: linear-gradient(var(--sky-top) 0%, var(--sky-middle) 40%, var(--sky-bottom) 70%); }
 .sky { position: absolute; width: 100%; height: 55%; top: 0; }
-.celestial { position: absolute; width: 80px; height: 80px; top: 52px; right: 12%; overflow: visible; animation: celestial-float 6s ease-in-out infinite; }
+.celestial { position: absolute; width: 80px; height: 80px; aspect-ratio: 1 / 1; top: 52px; right: 12%; overflow: visible; animation: celestial-float 6s ease-in-out infinite; }
 .moon { animation-duration: 6.8s; animation-delay: -2s; }
 .sun-ray { fill: #e5c674; opacity: .6; animation: sun-ray-pulse 5.6s ease-in-out infinite; }
 .sun-ray:nth-child(2) { animation-delay: -.7s; }
@@ -92,7 +92,7 @@ svg { shape-rendering: crispEdges; }
 .status-light { width: 8px; height: 8px; background: var(--light-blue); box-shadow: 2px 2px var(--navy); flex-shrink: 0; }
 .theme-toggle { display: flex; align-items: center; justify-content: center; gap: 5px; min-width: 72px; min-height: 44px; padding: 5px 7px; border: 2px solid var(--outline); background: var(--paper); box-shadow: inset 2px 2px #fffdf088, 0 2px var(--outline); color: var(--ink); font: bold 10px/1 "Courier New", monospace; cursor: pointer; }
 .theme-toggle[hidden] { display: none; }
-.theme-toggle svg { width: 19px; height: 19px; }
+.theme-toggle svg { width: 19px; height: 19px; aspect-ratio: 1 / 1; }
 .theme-toggle:hover { border-color: var(--navy); }
 .theme-toggle:active { transform: translateY(2px); box-shadow: inset 2px 2px #b79d6730; }
 .theme-toggle:focus-visible { outline: 3px solid var(--navy); outline-offset: 3px; }
@@ -102,7 +102,8 @@ h1 { margin: 0; }
 .scene-heading { margin: 0 0 13px; font: bold 23px/1.2 "Courier New", monospace; color: var(--olive); text-shadow: 1px 1px #dfcea5; letter-spacing: -1px; }
 .scene-heading span { font-size: 17px; letter-spacing: 0; }
 .walking-scene { border: 3px solid var(--outline); box-shadow: 0 3px var(--button-bottom); overflow: hidden; background: var(--sky-top); aspect-ratio: 2 / 1; }
-.walking-scene canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+/* Preserve square pixels and circular sky sprites inside the bordered window. */
+.walking-scene canvas { display: block; width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
 .welcome { margin: 14px auto 6px; max-width: 330px; font-size: 13px; line-height: 1.9; text-wrap: pretty; }
 .email-line { margin: 0 0 9px; font-size: 13px; line-height: 1.8; }
 .email-line a { display: inline-block; padding: 3px 4px; color: var(--muted); text-decoration: underline; text-decoration-color: #c5b58e; text-underline-offset: 3px; }

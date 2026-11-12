@@ -1,19 +1,9 @@
 "use strict";
 
-// A saved manual choice takes priority over the visitor's local clock.
-const themeStorageKey = "youten-space-theme";
+// Every load follows local time until the visitor previews the other theme.
 const themeToggle = document.querySelector(".theme-toggle");
 let manualTheme = null;
 let themeTimer;
-
-function readSavedTheme() {
-  try {
-    const saved = localStorage.getItem(themeStorageKey);
-    return saved === "day" || saved === "night" ? saved : null;
-  } catch {
-    return null; // The clock still works when browser storage is unavailable.
-  }
-}
 
 function updateTheme() {
   clearTimeout(themeTimer);
@@ -22,12 +12,14 @@ function updateTheme() {
   const theme = manualTheme || (isDaytime ? "day" : "night");
   document.body.classList.toggle("theme-day", theme === "day");
   document.body.classList.toggle("theme-night", theme === "night");
+  const nextTheme = theme === "day" ? "night" : "day";
+  themeToggle.setAttribute("aria-label", `Theme: ${theme}. Preview ${nextTheme} theme`);
   themeToggle.setAttribute("aria-pressed", String(theme === "night"));
-  themeToggle.setAttribute("aria-label", `Switch to ${theme === "day" ? "night" : "day"} theme`);
+  themeToggle.title = `Preview ${nextTheme} until refresh`;
   themeToggle.querySelector(".theme-label").textContent = theme === "day" ? "Day" : "Night";
 
   // Recheck at the next local 06:00 or 18:00 boundary while in automatic mode.
-  if (!manualTheme) {
+  if (manualTheme === null) {
     const nextChange = new Date(now);
     if (now.getHours() < 6) nextChange.setHours(6, 0, 0, 0);
     else if (now.getHours() < 18) nextChange.setHours(18, 0, 0, 0);
@@ -39,16 +31,10 @@ function updateTheme() {
   }
 }
 
-manualTheme = readSavedTheme();
 updateTheme();
 themeToggle.hidden = false;
 themeToggle.addEventListener("click", () => {
   manualTheme = document.body.classList.contains("theme-day") ? "night" : "day";
-  try {
-    localStorage.setItem(themeStorageKey, manualTheme);
-  } catch {
-    // Keep the manual choice for this page even when storage is blocked.
-  }
   updateTheme();
 });
 
@@ -56,12 +42,6 @@ document.addEventListener("visibilitychange", () => {
   if (!document.hidden) updateTheme();
 });
 window.addEventListener("pageshow", updateTheme);
-window.addEventListener("storage", (event) => {
-  if (event.key === themeStorageKey || event.key === null) {
-    manualTheme = readSavedTheme();
-    updateTheme();
-  }
-});
 
 // Edit the three main button URLs and the email link here.
 // Use complete https:// URLs, or mailto: for an email address.
